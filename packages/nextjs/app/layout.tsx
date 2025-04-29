@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ScaffoldStarkAppWithProviders } from "~~/components/ScaffoldStarkAppWithProviders";
 import "~~/styles/globals.css";
 import { ThemeProvider } from "~~/components/ThemeProvider";
+import { CounterContractProvider } from "~~/components/CounterProvider";
 
 export const metadata: Metadata = {
   title: "Scaffold-Stark",
@@ -15,7 +16,7 @@ const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
       <body>
         <ThemeProvider enableSystem>
           <ScaffoldStarkAppWithProviders>
-            {children}
+            <CounterContractProvider>{children}</CounterContractProvider>
           </ScaffoldStarkAppWithProviders>
         </ThemeProvider>
       </body>
