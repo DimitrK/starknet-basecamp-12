@@ -9,13 +9,15 @@ edition = "2024_07"
 starknet = "2.9.4"
 openzeppelin_access = "1.0.0"
 openzeppelin_token = "1.0.0"
+openzeppelin_presets = "1.0.0"
 
 [dev-dependencies]
 openzeppelin_utils = "1.0.0"
 snforge_std = "0.38.2"
 
 [[target.starknet-contract]]
-casm = true # taggle this to `false` to speed up compilation/testing
+casm = true                                                                  # taggle this to `false` to speed up compilation/testing
+build-external-contracts = ["openzeppelin_presets::erc20::ERC20Upgradeable"]
 
 [tool.fmt]
 sort-module-level-items = true
