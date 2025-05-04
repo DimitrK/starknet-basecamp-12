@@ -1,3 +1,4 @@
+import { CairoOptionVariant, CairoOption } from "starknet";
 import {
   deployContract,
   executeDeployCalls,
@@ -42,12 +43,15 @@ import { green } from "./helpers/colorize-log";
  * @returns {Promise<void>}
  */
 const deployScript = async (): Promise<void> => {
+  const none = new CairoOption<string>(CairoOptionVariant.None);
+
   await deployContract({
     contract: "Counter",
     contractName: "Counter",
     constructorArgs: {
       owner: deployer.address,
       initial_value: 0,
+      token: none,
     },
   });
 };
