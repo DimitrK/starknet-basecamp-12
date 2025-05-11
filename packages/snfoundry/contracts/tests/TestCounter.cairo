@@ -5,12 +5,11 @@ use contracts::Counter::{
 use openzeppelin_access::ownable::interface::{IOwnableDispatcher, IOwnableDispatcherTrait};
 use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
 use openzeppelin_utils::serde::SerializedAppend;
-use snforge_std::EventSpyAssertionsTrait;
 use snforge_std::{
-    ContractClassTrait, DeclareResultTrait, declare, spy_events, start_cheat_caller_address,
-    stop_cheat_caller_address,
+    ContractClassTrait, DeclareResultTrait, EventSpyAssertionsTrait, declare, spy_events,
+    start_cheat_caller_address, stop_cheat_caller_address,
 };
-use starknet::{ContractAddress, contract_address_const};
+use starknet::ContractAddress;
 
 const ZERO: u32 = 0;
 const OWNER: felt252 = 0x02dA5254690b46B9C4059C25366D1778839BE63C142d899F0306fd5c312A5918;
@@ -53,7 +52,7 @@ fn deploy_token() -> IERC20Dispatcher {
     let token_name: ByteArray = "Stark Token";
     let token_symbol: ByteArray = "STRK";
     let token_supply: u256 = 100000;
-    let token_owner = contract_address_const::<'token_owner'>();
+    let token_owner: ContractAddress = 'token_owner'.try_into().unwrap();
     let token_recipient = token_owner;
 
     let mut token_constructor_calldata = array![];
