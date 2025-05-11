@@ -11,8 +11,8 @@ import {
   DeclareContractPayload,
   UniversalDetails,
   isSierra,
-  TransactionReceipt,
   constants,
+  RevertedTransactionReceiptResponse,
 } from "starknet";
 import { DeployContractParams, Network } from "./types";
 import { green, red, yellow } from "./helpers/colorize-log";
@@ -46,6 +46,21 @@ let deployCalls = [];
 
 const { provider, deployer }: Network = networks[networkName];
 
+const resourceBounds = {
+  l1_gas: {
+    max_amount: "0x186a0", // 100,000 in hex
+    max_price_per_unit: "0x2540be400", // 10^10 in hex
+  },
+  l2_gas: {
+    max_amount: "0x3b9aca00", // 1,000,000,000 in hex
+    max_price_per_unit: "0x2540be400", // 10^10 in hex
+  },
+  l1_data_gas: {
+    max_amount: "0x186a0", // 100,000 in hex
+    max_price_per_unit: "0x2540be400", // 10^10 in hex
+  },
+};
+
 const declareIfNot_NotWait = async (
   payload: DeclareContractPayload,
   options?: UniversalDetails
@@ -57,6 +72,7 @@ const declareIfNot_NotWait = async (
     try {
       const { transaction_hash } = await deployer.declare(payload, {
         ...options,
+        resourceBounds,
         version: constants.TRANSACTION_VERSION.V3,
       });
       if (networkName === "sepolia" || networkName === "mainnet") {
@@ -245,11 +261,10 @@ const executeDeployCalls = async (options?: UniversalDetails) => {
       version: constants.TRANSACTION_VERSION.V3,
     });
     if (networkName === "sepolia" || networkName === "mainnet") {
-      const receipt = (await provider.waitForTransaction(
-        transaction_hash
-      )) as TransactionReceipt;
-      if (receipt.execution_status !== "SUCCEEDED") {
-        const revertReason = receipt.revert_reason;
+      const receipt = await provider.waitForTransaction(transaction_hash);
+      if (receipt.isReverted()) {
+        const revertedTx = receipt.value as RevertedTransactionReceiptResponse;
+        const revertReason = revertedTx.revert_reason;
         throw new Error(red(`Deploy Calls Failed: ${revertReason}`));
       }
     }

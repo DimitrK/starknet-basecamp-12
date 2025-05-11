@@ -1,4 +1,4 @@
-import { RpcProvider, Account } from "starknet";
+import { RpcProvider, Account, Signer, ETransactionVersion3 } from "starknet";
 import path from "path";
 import dotenv from "dotenv";
 import { Networks } from "../types";
@@ -18,7 +18,13 @@ const providerDevnet =
 const deployerDevnet =
   ACCOUNT_ADDRESS_DEVNET &&
   PRIVATE_KEY_DEVNET &&
-  new Account(providerDevnet, ACCOUNT_ADDRESS_DEVNET, PRIVATE_KEY_DEVNET, "1");
+  new Account(
+    providerDevnet,
+    ACCOUNT_ADDRESS_DEVNET,
+    new Signer(process.env.PRIVATE_KEY_DEVNET),
+    "1",
+    ETransactionVersion3.V3
+  );
 
 const ETH_TOKEN_ADDRESS_DEVNET =
   "0x49D36570D4E46F48E99674BD3FCC84644DDD6B96F7C741B1562B82F9E004DC7";
